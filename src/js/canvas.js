@@ -1,4 +1,7 @@
 import platform from "../img/platform.png";
+import background from "../img/background.png";
+import hills from "../img/hills.png";
+
 console.log(platform);
 const canvas = document.querySelector("canvas");
 
@@ -39,8 +42,8 @@ class Platform {
   constructor({ x, y, image }) {
     this.position = {
       x,
-      y,
-    };
+      y
+    }
     this.image = image;
     // this.width = image.width
     // this.height = image.height
@@ -54,15 +57,40 @@ class Platform {
   }
 }
 
-const image = new Image();
-image.src = platform;
+class GenericObject {
+  constructor({ x, y, image }) {
+    this.position = {
+      x,
+      y
+    }
+    this.image = image;
+    this.width = image.width
+    this.height = image.height
+  }
+  draw() {
+    c.drawImage(this.image, this.position.x, this.position.y);
+  }
+}
+
+function createImage(imageSrc){
+  const image = new Image();
+  image.src = imageSrc;
+  return image
+}
+
+const platformImage = createImage(platform)
 
 const player = new Player();
 // const platform = new Platform();
 const platforms = [
-  new Platform({ x: -1, y: 470, image }),
-  new Platform({ x: 575, y: 470, image }),
+  new Platform({ x: -1, y: 470, image: platformImage }),
+  new Platform({ x: 575, y: 470, image: platformImage }),
 ];
+
+const genericObjects = [new GenericObject({
+  x:-1, y:-1, image: createImage(background)}),
+  new GenericObject({
+    x:-1, y:-1, image: createImage(hills)})]
 
 const keys = {
   right: {
@@ -80,10 +108,16 @@ function animate() {
   requestAnimationFrame(animate);
   c.fillStyle = "white";
   c.fillRect(0, 0, canvas.width, canvas.height);
+
+  genericObjects.forEach(genericObject => {
+    genericObject.draw()
+  })
+
   platforms.forEach((platform) => {
     platform.draw();
   });
   player.update();
+
   if (keys.right.pressed && player.position.x < 400) {
     player.velocity.x = 5;
   } else if (keys.left.pressed && player.position.x > 100) {
@@ -95,11 +129,17 @@ function animate() {
       platforms.forEach((platform) => {
         platform.position.x -= 5;
       });
+      genericObjects.forEach(genericObject => {
+        genericObject.position.x -= 3
+      })
     } else if (keys.left.pressed) {
-      scrollOffset += 5;
+      scrollOffset -= 5;
       platforms.forEach((platform) => {
         platform.position.x += 5;
       });
+      genericObjects.forEach(genericObject => {
+        genericObject.position.x += 3
+      })
     }
 
     if (scrollOffset > 2000) {
