@@ -125,6 +125,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/img/platformSmallTall.png":
+/*!***************************************!*\
+  !*** ./src/img/platformSmallTall.png ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (__webpack_require__.p + "0587f9be8e442eb74b2fe283bbf1a947.png");
+
+/***/ }),
+
 /***/ "./src/js/canvas.js":
 /*!**************************!*\
   !*** ./src/js/canvas.js ***!
@@ -136,12 +149,14 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _img_platform_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../img/platform.png */ "./src/img/platform.png");
 /* harmony import */ var _img_background_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../img/background.png */ "./src/img/background.png");
-/* harmony import */ var _img_hills_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../img/hills.png */ "./src/img/hills.png");
+/* harmony import */ var _img_platformSmallTall_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../img/platformSmallTall.png */ "./src/img/platformSmallTall.png");
+/* harmony import */ var _img_hills_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../img/hills.png */ "./src/img/hills.png");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -157,6 +172,7 @@ var Player = /*#__PURE__*/function () {
   function Player() {
     _classCallCheck(this, Player);
 
+    this.speed = 10;
     this.position = {
       x: 100,
       y: 100
@@ -255,28 +271,9 @@ function createImage(imageSrc) {
 var platformImage = createImage(_img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var player = new Player(); // const platform = new Platform();
 
-var platforms = [new Platform({
-  x: -1,
-  y: 470,
-  image: platformImage
-}), new Platform({
-  x: 575,
-  y: 470,
-  image: platformImage
-}), new Platform({
-  x: 575 * 2 + 100,
-  y: 470,
-  image: platformImage
-})];
-var genericObjects = [new GenericObject({
-  x: -1,
-  y: -1,
-  image: createImage(_img_background_png__WEBPACK_IMPORTED_MODULE_1__["default"])
-}), new GenericObject({
-  x: -1,
-  y: -1,
-  image: createImage(_img_hills_png__WEBPACK_IMPORTED_MODULE_2__["default"])
-})];
+var platforms = [];
+var genericObjects = [];
+var platformSmallTallImage = createImage(_img_platformSmallTall_png__WEBPACK_IMPORTED_MODULE_2__["default"]);
 var keys = {
   right: {
     pressed: false
@@ -293,6 +290,10 @@ function init() {
   player = new Player(); // const platform = new Platform();
 
   platforms = [new Platform({
+    x: 575 * 4 + 300 + 575 - 288,
+    y: 270,
+    image: platformSmallTallImage
+  }), new Platform({
     x: -1,
     y: 470,
     image: platformImage
@@ -304,6 +305,18 @@ function init() {
     x: 575 * 2 + 100,
     y: 470,
     image: platformImage
+  }), new Platform({
+    x: 575 * 3 + 300,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: 575 * 4 + 300,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: 575 * 5 + 700,
+    y: 470,
+    image: platformImage
   })];
   genericObjects = [new GenericObject({
     x: -1,
@@ -312,7 +325,7 @@ function init() {
   }), new GenericObject({
     x: -1,
     y: -1,
-    image: createImage(_img_hills_png__WEBPACK_IMPORTED_MODULE_2__["default"])
+    image: createImage(_img_hills_png__WEBPACK_IMPORTED_MODULE_3__["default"])
   })];
   scrollOffset = 0;
 }
@@ -330,27 +343,27 @@ function animate() {
   player.update();
 
   if (keys.right.pressed && player.position.x < 400) {
-    player.velocity.x = 5;
+    player.velocity.x = player.speed;
   } else if (keys.left.pressed && player.position.x > 100) {
-    player.velocity.x = -5;
+    player.velocity.x = -player.speed;
   } else {
     player.velocity.x = 0;
 
     if (keys.right.pressed) {
-      scrollOffset += 5;
+      scrollOffset += player.speed;
       platforms.forEach(function (platform) {
-        platform.position.x -= 5;
+        platform.position.x -= player.speed;
       });
       genericObjects.forEach(function (genericObject) {
-        genericObject.position.x -= 3;
+        genericObject.position.x -= player.speed * 0.66;
       });
     } else if (keys.left.pressed) {
-      scrollOffset -= 5;
+      scrollOffset -= player.speed;
       platforms.forEach(function (platform) {
-        platform.position.x += 5;
+        platform.position.x += player.speed;
       });
       genericObjects.forEach(function (genericObject) {
-        genericObject.position.x += 3;
+        genericObject.position.x += player.speed * 0.66;
       });
     }
   } // platform collision detection
@@ -362,7 +375,7 @@ function animate() {
     }
   });
 
-  if (scrollOffset > 2000) {
+  if (scrollOffset > 575 * 5 + 300) {
     console.log("you win");
   }
 
@@ -372,6 +385,7 @@ function animate() {
   }
 }
 
+init();
 animate();
 addEventListener("keydown", function (_ref3) {
   var keyCode = _ref3.keyCode;
@@ -394,7 +408,7 @@ addEventListener("keydown", function (_ref3) {
 
     case 87:
       console.log("up");
-      player.velocity.y -= 20;
+      player.velocity.y -= 25;
       break;
   }
 });
@@ -418,8 +432,8 @@ addEventListener("keyup", function (_ref4) {
       break;
 
     case 87:
-      console.log("up");
-      player.velocity.y -= 20;
+      console.log("up"); // player.velocity.y -= 20;
+
       break;
   }
 });

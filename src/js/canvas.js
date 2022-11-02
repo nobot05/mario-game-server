@@ -1,5 +1,6 @@
 import platform from "../img/platform.png";
 import background from "../img/background.png";
+import platformSmallTall from "../img/platformSmallTall.png";
 import hills from "../img/hills.png";
 
 console.log(platform);
@@ -12,6 +13,7 @@ const gravity = 1.5;
 
 class Player {
   constructor() {
+    this.speed = 10;
     this.position = {
       x: 100,
       y: 100,
@@ -82,24 +84,11 @@ let platformImage = createImage(platform);
 
 let player = new Player();
 // const platform = new Platform();
-let platforms = [
-  new Platform({ x: -1, y: 470, image: platformImage }),
-  new Platform({ x: 575, y: 470, image: platformImage }),
-  new Platform({ x: 575 * 2 + 100, y: 470, image: platformImage }),
-];
+let platforms = [];
 
-let genericObjects = [
-  new GenericObject({
-    x: -1,
-    y: -1,
-    image: createImage(background),
-  }),
-  new GenericObject({
-    x: -1,
-    y: -1,
-    image: createImage(hills),
-  }),
-];
+let genericObjects = [];
+
+let platformSmallTallImage = createImage(platformSmallTall)
 
 const keys = {
   right: {
@@ -119,9 +108,13 @@ function init() {
   player = new Player();
   // const platform = new Platform();
   platforms = [
+    new Platform({ x: 575 * 4 + 300 + 575 - 288, y: 270, image: platformSmallTallImage}),
     new Platform({ x: -1, y: 470, image: platformImage }),
     new Platform({ x: 575, y: 470, image: platformImage }),
     new Platform({ x: 575 * 2 + 100, y: 470, image: platformImage }),
+    new Platform({ x: 575 * 3 + 300, y: 470, image: platformImage }),
+    new Platform({ x: 575 * 4 + 300, y: 470, image: platformImage }),
+    new Platform({ x: 575 * 5 + 700, y: 470, image: platformImage }),
   ];
 
   genericObjects = [
@@ -155,26 +148,26 @@ function animate() {
   player.update();
 
   if (keys.right.pressed && player.position.x < 400) {
-    player.velocity.x = 5;
+    player.velocity.x = player.speed;
   } else if (keys.left.pressed && player.position.x > 100) {
-    player.velocity.x = -5;
+    player.velocity.x = -player.speed;
   } else {
     player.velocity.x = 0;
     if (keys.right.pressed) {
-      scrollOffset += 5;
+      scrollOffset += player.speed;
       platforms.forEach((platform) => {
-        platform.position.x -= 5;
+        platform.position.x -= player.speed;
       });
       genericObjects.forEach((genericObject) => {
-        genericObject.position.x -= 3;
+        genericObject.position.x -= player.speed * 0.66;
       });
     } else if (keys.left.pressed) {
-      scrollOffset -= 5;
+      scrollOffset -= player.speed;
       platforms.forEach((platform) => {
-        platform.position.x += 5;
+        platform.position.x += player.speed;
       });
       genericObjects.forEach((genericObject) => {
-        genericObject.position.x += 3;
+        genericObject.position.x += player.speed * 0.66;
       });
     }
   }
@@ -192,14 +185,16 @@ function animate() {
     }
   });
 
-  if (scrollOffset > 2000) {
+  if (scrollOffset > (575 * 5 + 300)) {
     console.log("you win");
   }
   if (player.position.y > canvas.height) {
     // console.log("you lose");
-    init()
+    init();
   }
 }
+
+init()
 animate();
 
 addEventListener("keydown", ({ keyCode }) => {
@@ -218,7 +213,7 @@ addEventListener("keydown", ({ keyCode }) => {
       break;
     case 87:
       console.log("up");
-      player.velocity.y -= 20;
+      player.velocity.y -= 25;
       break;
   }
 });
@@ -239,7 +234,7 @@ addEventListener("keyup", ({ keyCode }) => {
       break;
     case 87:
       console.log("up");
-      player.velocity.y -= 20;
+      // player.velocity.y -= 20;
       break;
   }
 });
